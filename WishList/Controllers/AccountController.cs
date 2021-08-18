@@ -34,7 +34,7 @@ namespace WishList.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser {Email = registerViewModel.Email, UserName = registerViewModel.Email};
+                var user = new ApplicationUser { Email = registerViewModel.Email, UserName = registerViewModel.Email };
                 var result = _userManager.CreateAsync(user, registerViewModel.Password);
 
 
@@ -50,6 +50,36 @@ namespace WishList.Controllers
             }
 
             return View(registerViewModel);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public IActionResult Login(LoginViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var result =
+                    _signInManager.PasswordSignInAsync(viewModel.Email, viewModel.Password, false, false).Result;
+
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                }
+
+                return RedirectToAction("Index", "Item");
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Logout()
+        {
+            _signInManager.SignOutAsync();
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }
