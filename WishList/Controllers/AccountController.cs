@@ -52,6 +52,14 @@ namespace WishList.Controllers
             return View(registerViewModel);
         }
 
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -65,6 +73,7 @@ namespace WishList.Controllers
                 if (!result.Succeeded)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return View("Login", viewModel);
                 }
 
                 return RedirectToAction("Index", "Item");
